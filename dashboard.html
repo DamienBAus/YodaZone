@@ -69,12 +69,51 @@
 			subscribe_key: 'sub-c-5fe14630-c394-11e4-b54a-0619f8945a4f'
 		});
 		
+		var test;
 		PUBNUB_yoda.subscribe({
 			channel : 'Yoda',
 			message : function(m){ accelBuf = m;
-				//console.log(accelBuf);
+				test = m; 
+		 
+			for(i = 0; i<99;i++){
+				document.getElementById("stressed-status3").innerHTML = 'Happy' ;	
+				document.getElementById("stressed-status3").style.color = "#333";
+				if (test[i].stress>2){ //go through the array and find "stress values (more then 1 g acceleration"
+					console.log("STRESS");
+					document.getElementById("stressed-status3").innerHTML = 'STRESSED!!' ;		
+					document.getElementById("stressed-status3").style.color = "#ff0000";
+					
+					jQuery.getJSON
+					  (
+						"http://vaas.acapela-group.com/Services/UrlMaker?jsoncallback=?",
+					   {
+						  prot_vers: 2, cl_login: "EVAL_VAAS", cl_app: "EVAL_2016627", cl_pwd: "k2p24rgu", 
+						  req_voice:"willlittlecreature22k", 
+						  req_text:"Stressed you are, rest you should take! Breath in, breath out!",
+						  //to produce ogg vorbis files, for MP3 you can remove this param.
+						  req_snd_type:"OGG"  
+					   },
+					   function(data) 
+					   {
+					   
+						  // Data exploitation 
+						  jQuery("#demo1player").html("<audio src='"+data.snd_url+"' controls='controls' autoplay />");	
+					   }						
+					);
+								i=100;
 				}
-		});
+						
+			}
+		}});
+		
+		var test;
+		var pubthingy = PUBNUB.init({
+		subscribe_key: 'sub-c-5fe14630-c394-11e4-b54a-0619f8945a4f'
+		}).subscribe({
+		channel : 'Yoda',
+		message : function(msg){ console.log(msg) //get correct data
+				
+		}});
 		
 		//sensor data stream
 		var PUBNUB_sensor = PUBNUB.init({
@@ -85,7 +124,8 @@
 		
 		function collectHundred(m){
 			if(sensorBuf.length >= 100){
-				//console.log(sensorBuf); //print everything for now. replace later
+				console.log("collectHundred")
+				console.log(sensorBuf); //print everything for now. replace later
 				//avgHeartBeat();
 				sensorBuf = []; //start over from zero
 			}
@@ -101,7 +141,7 @@
 			{
 				total += parseInt( sensorBuf[i].ambient_temperature );
 			}
-			var avg = (total/sensorBuf.length) + HEARTBEAT_OFFSET;
+			var avg = (total/sensorBuf.length) + 200;
 			return console.log(avg);
 		}
 	</script>
@@ -109,6 +149,7 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <div class="container">
 
 	<div id="content">
@@ -155,11 +196,63 @@
 				<div id="timeline6"></div>
 				<div id="preview6"></div>
 			</div>
+=======
+<div id="content">
+<center><h1>Stress Levels of Millennium Falcon Employees</h1></center>
+	<form id="side_panel">
+		<h2>See Relevant Data</h2>
+		<div class="side-buttons" id="btnAll"><button type="button" class="btn btn-primary">See All Stress Levels</button></div>
+		<div class="side-buttons" id="btnDpt"><button type="button" class="btn btn-warning">View Departments</button></div>
+		<div class="side-buttons" id="btnWook"><button type="button" class="btn btn-success">View Wookies</button></div>
+		<div class="side-buttons" id="btnJedi"><button type="button" class="btn btn-success">View Jedis</button></div>
+		<div id="legend1"></div>
+		<div id="legend2"></div>
+		
+	</form>
+
+	<div id="chart_container">
+		<div id="individual-graphs-wook">
+			<h2>Damien (<span id="stressed-status1">Happy</span>)</h2>
+			<div id="chart1"></div>
+			<div id="timeline1"></div>
+			<div id="preview1"></div>
+			<h2>Jumar (<span id="stressed-status2">Happy</span>)</h2>
+			<div id="chart2"></div>
+			<div id="timeline2"></div>
+			<div id="preview2"></div>
+		</div>
+		<div id="individual-graphs-jedi">
+			<h2>Jeroen (<span id="stressed-status3">Happy</span><span id="demo1player"></span>)</h2>
+			<div id="chart3"></div>
+			<div id="timeline3"></div>
+			<div id="preview3"></div>
+			<h2>Anubhooti (<span id="stressed-status4">Happy</span>)</h2>
+			<div id="chart4"></div>
+			<div id="timeline4"></div>
+			<div id="preview4"></div>
+		</div>
+		<div id="department-graphs">
+			<h2>The Wookies</h2>
+			<div id="chart5"></div>
+			<div id="timeline5"></div>
+			<div id="preview5"></div>
+			<h2>The Jedis</h2>
+			<div id="chart6"></div>
+			<div id="timeline6"></div>
+			<div id="preview6"></div>
+>>>>>>> 17ca683b356a205579402ef829151b131390460a
 		</div>
 		
 		
 
+<<<<<<< HEAD
 	</div>
+=======
+<style>
+.ui-slider-horizontal, #legend1, #legend2, #btnAll, #department-graphs, #demo1player {
+	display:none;
+}
+>>>>>>> 17ca683b356a205579402ef829151b131390460a
 
 	<style>
 	.ui-slider-horizontal, #legend1, #legend2, #btnAll, #department-graphs {
@@ -177,17 +270,23 @@
 
 	<script>
 
+<<<<<<< HEAD
 	// set up our data series with 150 random data points
+=======
+var seriesData = [ [], [], [], [], [], [], [], [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(150);
+//var random = new Rickshaw.Fixtures.sensorBuf;
+>>>>>>> 17ca683b356a205579402ef829151b131390460a
 
 <<<<<<< HEAD
 	var seriesData = [ [], [], [], [], [], [], [], [], [] ];
 	var random = new Rickshaw.Fixtures.RandomData(150);
 =======
 //loop thru the json accelBuf and sensorBuf
-for(i = 0; i < 100; i++) {
+/*for(i = 0; i < 100; i++) {
 	sensorBuf[i] = 0;
 	console.log(sensorBuf);
-}
+}*/
 //end my stuff
 
 
@@ -835,7 +934,9 @@ var messages = [
 
 setInterval( function() {
 	random.removeData(seriesData); //remove my old data
-	random.addData(seriesData); //add my new data
+	//random.addData(seriesData); //add my new data
+	updateSeriesData();
+	console.log(sensorBuf);
 	graph.update();
 	graph2.update();
 	graph3.update();
@@ -859,6 +960,24 @@ function addAnnotation(force) {
 		annotator5.update();
 		annotator6.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
 		annotator6.update();
+	}
+}
+
+function updateSeriesData() {
+	var sensorBufLegth = sensorBuf.length;
+	//alert(sensorBufLegth);
+	var sensorTotal = 0.0;
+	for(i=0;i<sensorBufLegth;i++) {
+		sensorTotal += parseInt( sensorBuf[i].ambient_temperature );
+	}
+	//alert(sensorTotal+" "+sensorBufLegth);
+	var avg = (sensorTotal/sensorBufLegth)+HEARTBEAT_OFFSET;
+	
+	for (i=0;i<seriesData.length;i++) {
+		
+		var newTime = seriesData[i][seriesData[i].length-1].x+150;
+		//if (i==0) alert(newTime + " " + avg);
+		seriesData[i].push( {x: newTime, y: avg});
 	}
 }
 
