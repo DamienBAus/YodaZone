@@ -50,6 +50,62 @@
 	<script src="src/js/Rickshaw.Graph.Axis.Y.js"></script>
 
 	<script src="additional/js/extensions.js"></script>
+	
+	<!-- View the Full Documentation. -->
+	<!-- Include the PubNub Library -->
+	<script src="http://cdn.pubnub.com/pubnub.min.js"></script>
+	<!-- View the Full Documentation. -->
+	<!-- Include the PubNub Library -->
+	<script src="http://cdn.pubnub.com/pubnub-dev.js"></script>
+
+	<!-- Instantiate PubNub -->
+	<script type="text/javascript">
+		var HEARTBEAT_OFFSET = 45;
+		var sensorBuf = [];
+		var accelBuf = [];
+		// yoda datastream
+		var PUBNUB_yoda = PUBNUB.init({
+			publish_key: 'pub-c-fbf2003d-dde7-4c70-93bd-6570b8ca05da',
+			subscribe_key: 'sub-c-5fe14630-c394-11e4-b54a-0619f8945a4f'
+		});
+		
+		PUBNUB_yoda.subscribe({
+			channel : 'Yoda',
+			message : function(m){ accelBuf = m;
+				//console.log(accelBuf);
+				}
+		});
+		
+		//sensor data stream
+		var PUBNUB_sensor = PUBNUB.init({
+			subscribe_key: 'sub-c-5f1b7c8e-fbee-11e3-aa40-02ee2ddab7fe'}).subscribe({
+				channel : 'pubnub-sensor-network',
+				message : function(m){collectHundred(m)}
+		});
+		
+		function collectHundred(m){
+			if(sensorBuf.length >= 100){
+				//console.log(sensorBuf); //print everything for now. replace later
+				//avgHeartBeat();
+				sensorBuf = []; //start over from zero
+			}
+			else
+				sensorBuf.push(m); //otherwise keep adding
+		}
+		
+		//avg of sensor data
+		function avgHeartBeat()
+		{
+			var total = 0.0;
+			for(i = 0; i < sensorBuf.length; i++)
+			{
+				total += parseInt( sensorBuf[i].ambient_temperature );
+			}
+			var avg = (total/sensorBuf.length) + HEARTBEAT_OFFSET;
+			return console.log(avg);
+		}
+	</script>
+	
 </head>
 <body>
 
@@ -123,6 +179,14 @@
 
 var seriesData = [ [], [], [], [], [], [], [], [], [] ];
 var random = new Rickshaw.Fixtures.RandomData(150);
+
+//loop thru the json accelBuf and sensorBuf
+for(i = 0; i < 100; i++) {
+	sensorBuf[i] = 0;
+	console.log(sensorBuf);
+}
+//end my stuff
+
 
 for (var i = 0; i < 150; i++) {
 	random.addData(seriesData);
@@ -464,8 +528,8 @@ var messages = [
 ];
 
 setInterval( function() {
-	random.removeData(seriesData);
-	random.addData(seriesData);
+	random.removeData(seriesData); //remove my old data
+	random.addData(seriesData); //add my new data
 	graph.update();
 	graph2.update();
 	graph3.update();
